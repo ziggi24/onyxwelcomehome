@@ -2,7 +2,7 @@
 const REWARDS_DATA = [
     {
         day: 1,
-        title: "Specialty Snack & Drink Date",
+        title: "Fancy Snack and Catch Up Date",
         description: "Coupon for one specialty snack and one specialty drink from one of our favorite stores. We'll enjoy them and do a big catch up, go through notes from Germany, the whole hiking trip, talk about how we've been feeling, things we might wanna change, and what we want to focus on for the next couple months.",
         icon: "🍰",
         rarity: "rare"
@@ -24,16 +24,16 @@ const REWARDS_DATA = [
     {
         day: 4,
         title: "Art Project Together",
-        description: "Let's make an art project together while reflecting on this last phase of life and what we've been through and what we want for the future. Maybe make art pieces where we pass them back and forth or just do some kind of creative and interpretive reflection on life and setting intentions for the future.",
+        description: "Let's make an art project together! Let's user it as an opportunity to reflect on this last phase of life, what we've been through, and what we want for the future. Maybe make art pieces where we pass them back and forth or just do some kind of creative and interpretive reflection on life and setting intentions for the future.",
         icon: "🎨",
         rarity: "epic"
     },
     {
         day: 5,
         title: "Memory Jar Filling",
-        description: "Fill out our memory jar! Now that we've gone through all of our notes and spent some time reflecting, let's put all of our favorite memories in our memories jar.",
+        description: "Lets fill out our memory jar! Now that we've gone through all of our notes and spent some time reflecting, let's put all of our favorite memories in our memories jar.",
         icon: "💭",
-        rarity: "legendary"
+        rarity: "epic"
     },
     {
         day: 6,
@@ -459,6 +459,25 @@ function init() {
 
 // Start the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
+
+// Debug function to unlock all days
+function debugUnlockAllDays() {
+    // Set the start date to today minus 6 days so all 7 days are available
+    const today = new Date();
+    const denverToday = new Date(today.toLocaleString("en-US", {timeZone: "America/Denver"}));
+    gameState.startDate = new Date(denverToday.getTime() - 6 * 24 * 60 * 60 * 1000);
+    saveGameState();
+    renderRewards();
+    console.log('Debug: All days unlocked!');
+}
+
+// Set up debug button
+document.addEventListener('DOMContentLoaded', () => {
+    const debugButton = document.getElementById('debug-unlock-all');
+    if (debugButton) {
+        debugButton.addEventListener('click', debugUnlockAllDays);
+    }
+});
 
 // Debug functions (remove in production)
 window.debugResetGame = function() {
