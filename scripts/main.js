@@ -24,7 +24,7 @@ const REWARDS_DATA = [
     {
         day: 4,
         title: "Art Project Together",
-        description: "Let's make an art project together! Let's user it as an opportunity to reflect on this last phase of life, what we've been through, and what we want for the future. Maybe make art pieces where we pass them back and forth or just do some kind of creative and interpretive reflection on life and setting intentions for the future.",
+        description: "Let's make an art project together! Let's use it as an opportunity to reflect on this last phase of life, what we've been through, and what we want for the future. Maybe make art pieces where we pass them back and forth or just do some kind of creative and interpretive reflection on life and setting intentions for the future.",
         icon: "🎨",
         rarity: "epic"
     },
