@@ -46,7 +46,7 @@ const REWARDS_DATA = [
         day: 7,
         title: "Full Body Massage",
         description: "A minimum 1 hour full body massage either today or redeemable at any time of your choosing.",
-        icon: "💆‍♀️",
+        icon: "💆",
         rarity: "legendary"
     }
 ];
