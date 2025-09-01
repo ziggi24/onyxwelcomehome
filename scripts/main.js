@@ -361,7 +361,7 @@ function closeModal() {
 }
 
 // Pre-rendered confetti data for smooth animation
-let preRenderedConfetti = [];
+let preRenderedConfettiBursts = []; // Now stores 3 separate bursts
 let confettiPreloaded = false;
 
 // Preload confetti during hold animation
@@ -371,122 +371,155 @@ function preloadConfetti() {
     const colors = ['#ffd700', '#ff6b6b', '#4facfe', '#00f2fe', '#667eea', '#764ba2', '#a8edea', '#fed6e3'];
     const shapes = ['circle', 'square', 'triangle', 'star'];
     
-    // Pre-calculate all particle data
-    for (let i = 0; i < 100; i++) { // Back to 100 for maximum impact!
-        const size = Math.random() * 16 + 8; // BIG and punchy particles!
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    // Get modal center for positioning
+    const modal = document.querySelector('.modal');
+    const modalRect = modal ? modal.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+    const modalCenterX = modalRect.left + modalRect.width / 2;
+    const modalCenterY = modalRect.top + modalRect.height / 2;
+    
+    // Create 3 bursts in triangle formation around the button
+    const burstOffsets = [
+        { x: 0, y: -60 },      // Top burst
+        { x: -50, y: 40 },     // Bottom left burst  
+        { x: 50, y: 40 }       // Bottom right burst
+    ];
+    
+    preRenderedConfettiBursts = [];
+    
+    burstOffsets.forEach((offset, burstIndex) => {
+        const burstParticles = [];
         
-        // Pre-calculate positions and velocities
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 350 + 200; // High velocity for dramatic effect!
-        const deltaX = Math.cos(angle) * velocity;
-        const deltaY = Math.sin(angle) * velocity;
+        // Each burst has 35 particles (total 105 for epic effect!)
+        for (let i = 0; i < 35; i++) {
+            const size = Math.random() * 16 + 8; // BIG and punchy particles!
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            // Position relative to burst center
+            const burstCenterX = modalCenterX + offset.x;
+            const burstCenterY = modalCenterY + offset.y;
+            
+            // Randomized explosion pattern
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 300 + 150;
+            const deltaX = Math.cos(angle) * velocity;
+            const deltaY = Math.sin(angle) * velocity;
+            
+            burstParticles.push({
+                size,
+                color,
+                shape,
+                centerX: burstCenterX,
+                centerY: burstCenterY,
+                deltaX,
+                deltaY,
+                rotation: Math.random() * 360,
+                sparkle: Math.random() > 0.7
+            });
+        }
         
-        preRenderedConfetti.push({
-            size,
-            color,
-            shape,
-            centerX,
-            centerY,
-            deltaX,
-            deltaY,
-            rotation: Math.random() * 360,
-            sparkle: Math.random() > 0.7
-        });
-    }
+        preRenderedConfettiBursts.push(burstParticles);
+    });
     
     confettiPreloaded = true;
 }
 
-// Create massive confetti explosion effect with pre-rendered data
+// Create single confetti burst
+function createSingleBurst(burstData, delay = 0) {
+    setTimeout(() => {
+        const particlesContainer = document.getElementById('particles');
+        
+        // Use requestAnimationFrame for smooth animation
+        const animateParticles = (particles) => {
+            const startTime = performance.now();
+            
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / 2000, 1); // 2 second animation
+                
+                particles.forEach((particleData, index) => {
+                    const particle = particleData.element;
+                    if (!particle || !particle.parentNode) return;
+                    
+                    // Use transform for hardware acceleration (much smoother on mobile)
+                    const currentX = particleData.deltaX * progress;
+                    const currentY = particleData.deltaY * progress + (progress * progress * 300); // More dramatic gravity
+                    const rotation = particleData.rotation + (progress * 720);
+                    const scale = 1 - (progress * 0.7); // Less shrinking for bigger visual impact
+                    const opacity = Math.max(0, 1 - (progress * 1.2)); // Fade out more gradually
+                    
+                    particle.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg) scale(${scale})`;
+                    particle.style.opacity = opacity;
+                });
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Clean up
+                    particles.forEach(p => {
+                        if (p.element && p.element.parentNode) {
+                            p.element.parentNode.removeChild(p.element);
+                        }
+                    });
+                }
+            };
+            
+            requestAnimationFrame(animate);
+        };
+        
+        // Create DOM elements and start animation
+        const particles = burstData.map(data => {
+            const particle = document.createElement('div');
+            particle.className = 'particle-optimized';
+            
+            // Set initial styles
+            particle.style.width = data.size + 'px';
+            particle.style.height = data.size + 'px';
+            particle.style.backgroundColor = data.color;
+            particle.style.position = 'fixed';
+            particle.style.left = data.centerX + 'px';
+            particle.style.top = data.centerY + 'px';
+            particle.style.borderRadius = data.shape === 'circle' ? '50%' : '0';
+            particle.style.zIndex = '10001';
+            particle.style.pointerEvents = 'none';
+            particle.style.willChange = 'transform, opacity'; // Hint for hardware acceleration
+            
+            // Big impactful glow effect
+            particle.style.boxShadow = `0 0 ${data.size * 2}px ${data.color}`;
+            
+            if (data.sparkle) {
+                particle.style.background = `radial-gradient(circle, ${data.color}, transparent)`;
+            }
+            
+            particlesContainer.appendChild(particle);
+            
+            return { element: particle, ...data };
+        });
+        
+        // Start smooth animation
+        animateParticles(particles);
+    }, delay);
+}
+
+// Create massive triple confetti explosion effect with pre-rendered data
 function createParticleExplosion() {
     if (!confettiPreloaded) {
         preloadConfetti(); // Fallback if not preloaded
     }
     
-    const particlesContainer = document.getElementById('particles');
-    
-    // Use requestAnimationFrame for smooth animation
-    const animateParticles = (particles) => {
-        const startTime = performance.now();
-        
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / 2000, 1); // 2 second animation
-            
-            particles.forEach((particleData, index) => {
-                const particle = particleData.element;
-                if (!particle || !particle.parentNode) return;
-                
-                // Use transform for hardware acceleration (much smoother on mobile)
-                const currentX = particleData.deltaX * progress;
-                const currentY = particleData.deltaY * progress + (progress * progress * 300); // More dramatic gravity
-                const rotation = particleData.rotation + (progress * 720);
-                const scale = 1 - (progress * 0.7); // Less shrinking for bigger visual impact
-                const opacity = Math.max(0, 1 - (progress * 1.2)); // Fade out more gradually
-                
-                particle.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg) scale(${scale})`;
-                particle.style.opacity = opacity;
-            });
-            
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                // Clean up
-                particles.forEach(p => {
-                    if (p.element && p.element.parentNode) {
-                        p.element.parentNode.removeChild(p.element);
-                    }
-                });
-            }
-        };
-        
-        requestAnimationFrame(animate);
-    };
-    
-    // Create DOM elements and start animation
-    const particles = preRenderedConfetti.map(data => {
-        const particle = document.createElement('div');
-        particle.className = 'particle-optimized';
-        
-        // Set initial styles
-        particle.style.width = data.size + 'px';
-        particle.style.height = data.size + 'px';
-        particle.style.backgroundColor = data.color;
-        particle.style.position = 'fixed';
-        particle.style.left = data.centerX + 'px';
-        particle.style.top = data.centerY + 'px';
-        particle.style.borderRadius = data.shape === 'circle' ? '50%' : '0';
-        particle.style.zIndex = '10001';
-        particle.style.pointerEvents = 'none';
-        particle.style.willChange = 'transform, opacity'; // Hint for hardware acceleration
-        
-        // Big impactful glow effect
-        particle.style.boxShadow = `0 0 ${data.size * 2}px ${data.color}`;
-        
-        if (data.sparkle) {
-            particle.style.background = `radial-gradient(circle, ${data.color}, transparent)`;
-        }
-        
-        particlesContainer.appendChild(particle);
-        
-        return { element: particle, ...data };
+    // Fire all three bursts with 0.5 second delays
+    preRenderedConfettiBursts.forEach((burstData, index) => {
+        createSingleBurst(burstData, index * 500); // 0ms, 500ms, 1000ms
     });
     
-    // Start smooth animation
-    animateParticles(particles);
-    
-    // Add gentle screen shake effect (no flashing)
+    // Add gentle screen shake effect (no flashing) - only once at the start
     document.body.style.animation = 'screenShake 0.5s ease-in-out';
     setTimeout(() => {
         document.body.style.animation = '';
     }, 500);
     
     // Reset preloaded data for next use
-    preRenderedConfetti = [];
+    preRenderedConfettiBursts = [];
     confettiPreloaded = false;
 }
 
