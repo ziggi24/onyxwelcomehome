@@ -10,14 +10,14 @@ const REWARDS_DATA = [
     {
         day: 2,
         title: "Game Night Together",
-        description: "Play some games! Maybe the escape room game, maybe some board games, card games, or a pokemon game? We could even play several games or try something new!",
+        description: "Lets play some board games! Maybe the escape room game, maybe the dice game, card games, or a pokemon game? We could even play several games or try something new!",
         icon: "🎮",
         rarity: "rare"
     },
     {
         day: 3,
         title: "Lunch Date",
-        description: "Bee will pick up any food or tasty treat we want on the way home from work. Then as long as the weather is okay, we sit outside on the patio and eat lunch together. Or I can come home and pick you up and we go to lunch together somewhere.",
+        description: "Lets get a cute lunch together! Bee will pick up any food or tasty treat we want on the way home from work. Then as long as the weather is okay, we sit outside on the patio and eat lunch together. Or Bee can come home and pick you up and we go to lunch together somewhere.",
         icon: "🥙",
         rarity: "rare"
     },
@@ -30,22 +30,22 @@ const REWARDS_DATA = [
     },
     {
         day: 5,
-        title: "Memory Jar Filling",
-        description: "Lets fill out our memory jar! Now that we've gone through all of our notes and spent some time reflecting, let's put all of our favorite memories in our memories jar.",
-        icon: "💭",
+        title: "Thrift Shopping Date",
+        description: "Let's update our style together! We can go to a thrift store and find some cute clothes, maybe some home decor, or just something fun and random. Let's go through our closets and get rid of some of clothes that dont feel like us anymore and find something we're excited to wear.",
+        icon: "👚",
         rarity: "epic"
     },
     {
         day: 6,
-        title: "Big Sushi Order!",
-        description: "A delicious big sushi order just for us to enjoy together! A huge congratulations for such an amazing achievement! Everyone is so proud of you and it's time to celebrate by getting a huge sushi order",
-        icon: "🍣",
+        title: "Memory Jar Filling",
+        description: "Lets fill out our memory jar! Now that we've gone through all of our notes and spent some time reflecting, let's spend some time putting all of our favorite memories from the last couple months in our memories jar.",
+        icon: "💭",
         rarity: "epic"
     },
     {
         day: 7,
         title: "Full Body Massage",
-        description: "A minimum 1 hour full body massage either today or redeemable at any time of your choosing.",
+        description: "Let me pamper you and give you a relaxing massage! Will be a minimum 1 hour full body massage redeemable today or any time of your choosing.",
         icon: "💆",
         rarity: "legendary"
     }
