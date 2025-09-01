@@ -471,11 +471,21 @@ function debugUnlockAllDays() {
     console.log('Debug: All days unlocked!');
 }
 
-// Set up debug button
+// Set up debug button with proper mobile support
 document.addEventListener('DOMContentLoaded', () => {
     const debugButton = document.getElementById('debug-unlock-all');
     if (debugButton) {
+        // Add multiple event listeners for better mobile compatibility
         debugButton.addEventListener('click', debugUnlockAllDays);
+        debugButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            debugUnlockAllDays();
+        });
+        
+        // Prevent default touch behaviors that might interfere
+        debugButton.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        });
     }
 });
 
