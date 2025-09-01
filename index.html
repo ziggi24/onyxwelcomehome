@@ -11,27 +11,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MotionPathHelper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Observer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-    <!-- ScrollSmoother requires ScrollTrigger -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js"></script>
-
-    <!-- RoughEase, ExpoScaleEase and SlowMo are all included in the EasePack file -->    
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/EasePack.min.js"></script>
-
 </head>
 <body>
     <div class="app">
-        <!-- Temporary Debug Buttons -->
-        <button class="debug-button" id="debug-unlock-all">🔓 DEV: Unlock All Days</button>
-        <button class="debug-button debug-button-reset" id="debug-reset-all">🔄 DEV: Reset All Days</button>
+        <!-- Temporary Debug Buttons - COMMENTED OUT -->
+        <!-- <button class="debug-button" id="debug-unlock-all">🔓 DEV: Unlock All Days</button>
+        <button class="debug-button debug-button-reset" id="debug-reset-all">🔄 DEV: Reset All Days</button> -->
         
         <div class="header">
             <h1 class="title">Welcome Home Onyx!</h1>
@@ -74,13 +59,5 @@
     </div>
 
     <script src="scripts/main.js"></script>
-    <script>
-        // use a script tag or an external JS file
-        document.addEventListener("DOMContentLoaded", (event) => {
-         gsap.registerPlugin(Flip,InertiaPlugin,MotionPathHelper,Observer,ScrollTrigger,ScrollSmoother,TextPlugin,RoughEase,SlowMo)
-         // gsap code here!
-        });
-       
-       </script>
 </body>
 </html>
