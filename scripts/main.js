@@ -571,19 +571,45 @@ function debugUnlockAllDays() {
     console.log('Debug: All days unlocked!');
 }
 
-// Set up debug button with proper mobile support
+// Debug function to reset all days
+function debugResetAllDays() {
+    // Reset to original start date (September 1st, 2025)
+    gameState.startDate = new Date('2025-09-01T00:00:00-06:00');
+    gameState.claimedRewards = [];
+    saveGameState();
+    renderRewards();
+    console.log('Debug: All days reset to original state!');
+}
+
+// Set up debug buttons with proper mobile support
 document.addEventListener('DOMContentLoaded', () => {
-    const debugButton = document.getElementById('debug-unlock-all');
-    if (debugButton) {
+    const debugUnlockButton = document.getElementById('debug-unlock-all');
+    const debugResetButton = document.getElementById('debug-reset-all');
+    
+    if (debugUnlockButton) {
         // Add multiple event listeners for better mobile compatibility
-        debugButton.addEventListener('click', debugUnlockAllDays);
-        debugButton.addEventListener('touchend', (e) => {
+        debugUnlockButton.addEventListener('click', debugUnlockAllDays);
+        debugUnlockButton.addEventListener('touchend', (e) => {
             e.preventDefault();
             debugUnlockAllDays();
         });
         
         // Prevent default touch behaviors that might interfere
-        debugButton.addEventListener('touchstart', (e) => {
+        debugUnlockButton.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        });
+    }
+    
+    if (debugResetButton) {
+        // Add multiple event listeners for better mobile compatibility
+        debugResetButton.addEventListener('click', debugResetAllDays);
+        debugResetButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            debugResetAllDays();
+        });
+        
+        // Prevent default touch behaviors that might interfere
+        debugResetButton.addEventListener('touchstart', (e) => {
             e.stopPropagation();
         });
     }
