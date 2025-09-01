@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Home - Login Rewards</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MotionPathHelper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Observer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <!-- ScrollSmoother requires ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js"></script>
+
+    <!-- RoughEase, ExpoScaleEase and SlowMo are all included in the EasePack file -->    
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/EasePack.min.js"></script>
+
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <h1 class="title">Welcome Home!</h1>
+            <p class="subtitle">Daily Login Rewards</p>
+        </div>
+
+        <div class="rewards-container">
+            <div class="rewards-grid" id="rewards-grid">
+                <!-- Rewards will be dynamically generated here -->
+            </div>
+        </div>
+
+        <!-- Unboxing Modal -->
+        <div class="modal-overlay" id="modal-overlay">
+            <div class="modal">
+                <div class="reward-box" id="reward-box">
+                    <div class="progress-outline" id="progress-outline"></div>
+                    <div class="box-glow"></div>
+                    <div class="box-shimmer"></div>
+                    <div class="box-content">
+                        <div class="box-icon">🎁</div>
+                    </div>
+                </div>
+                <div class="hold-instruction">
+                    <p>Hold to unbox your reward!</p>
+                </div>
+                <div class="reward-reveal" id="reward-reveal">
+                    <div class="reward-content">
+                        <h2 class="reward-title" id="reward-title"></h2>
+                        <div class="reward-description" id="reward-description"></div>
+                        <div class="reward-rarity" id="reward-rarity"></div>
+                    </div>
+                </div>
+                <button class="close-modal" id="close-modal">Back</button>
+            </div>
+        </div>
+
+        <!-- Particles for effects -->
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        // use a script tag or an external JS file
+        document.addEventListener("DOMContentLoaded", (event) => {
+         gsap.registerPlugin(Flip,InertiaPlugin,MotionPathHelper,Observer,ScrollTrigger,ScrollSmoother,TextPlugin,RoughEase,SlowMo)
+         // gsap code here!
+        });
+       
+       </script>
+</body>
+</html>
