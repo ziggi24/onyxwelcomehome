@@ -212,6 +212,11 @@ function openUnboxingModal(reward) {
                 
                 // Add pulsing glow effect
                 progressOutline.style.filter = `drop-shadow(0 0 ${percentage * 0.5}px rgba(255, 215, 0, 0.8))`;
+                
+                // Preload confetti at 50% for smooth animation
+                if (!confettiPreloaded) {
+                    preloadConfetti();
+                }
             }
             
             if (percentage > 75) {
@@ -355,72 +360,134 @@ function closeModal() {
     document.getElementById('particles').innerHTML = '';
 }
 
-// Create massive confetti explosion effect
-function createParticleExplosion() {
-    const particlesContainer = document.getElementById('particles');
+// Pre-rendered confetti data for smooth animation
+let preRenderedConfetti = [];
+let confettiPreloaded = false;
+
+// Preload confetti during hold animation
+function preloadConfetti() {
+    if (confettiPreloaded) return;
+    
     const colors = ['#ffd700', '#ff6b6b', '#4facfe', '#00f2fe', '#667eea', '#764ba2', '#a8edea', '#fed6e3'];
     const shapes = ['circle', 'square', 'triangle', 'star'];
     
-    // Create 100 particles for intense explosion
-    for (let i = 0; i < 100; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const size = Math.random() * 12 + 6;
+    // Pre-calculate all particle data
+    for (let i = 0; i < 100; i++) { // Back to 100 for maximum impact!
+        const size = Math.random() * 16 + 8; // BIG and punchy particles!
         const color = colors[Math.floor(Math.random() * colors.length)];
         const shape = shapes[Math.floor(Math.random() * shapes.length)];
         
-        // Start from center of screen
+        // Pre-calculate positions and velocities
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        
-        // Random explosion direction
         const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 300 + 150;
-        const finalX = centerX + Math.cos(angle) * velocity;
-        const finalY = centerY + Math.sin(angle) * velocity;
+        const velocity = Math.random() * 350 + 200; // High velocity for dramatic effect!
+        const deltaX = Math.cos(angle) * velocity;
+        const deltaY = Math.sin(angle) * velocity;
         
-        particle.style.width = size + 'px';
-        particle.style.height = size + 'px';
-        particle.style.backgroundColor = color;
-        particle.style.left = centerX + 'px';
-        particle.style.top = centerY + 'px';
+        preRenderedConfetti.push({
+            size,
+            color,
+            shape,
+            centerX,
+            centerY,
+            deltaX,
+            deltaY,
+            rotation: Math.random() * 360,
+            sparkle: Math.random() > 0.7
+        });
+    }
+    
+    confettiPreloaded = true;
+}
+
+// Create massive confetti explosion effect with pre-rendered data
+function createParticleExplosion() {
+    if (!confettiPreloaded) {
+        preloadConfetti(); // Fallback if not preloaded
+    }
+    
+    const particlesContainer = document.getElementById('particles');
+    
+    // Use requestAnimationFrame for smooth animation
+    const animateParticles = (particles) => {
+        const startTime = performance.now();
+        
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / 2000, 1); // 2 second animation
+            
+            particles.forEach((particleData, index) => {
+                const particle = particleData.element;
+                if (!particle || !particle.parentNode) return;
+                
+                // Use transform for hardware acceleration (much smoother on mobile)
+                const currentX = particleData.deltaX * progress;
+                const currentY = particleData.deltaY * progress + (progress * progress * 300); // More dramatic gravity
+                const rotation = particleData.rotation + (progress * 720);
+                const scale = 1 - (progress * 0.7); // Less shrinking for bigger visual impact
+                const opacity = Math.max(0, 1 - (progress * 1.2)); // Fade out more gradually
+                
+                particle.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg) scale(${scale})`;
+                particle.style.opacity = opacity;
+            });
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Clean up
+                particles.forEach(p => {
+                    if (p.element && p.element.parentNode) {
+                        p.element.parentNode.removeChild(p.element);
+                    }
+                });
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    };
+    
+    // Create DOM elements and start animation
+    const particles = preRenderedConfetti.map(data => {
+        const particle = document.createElement('div');
+        particle.className = 'particle-optimized';
+        
+        // Set initial styles
+        particle.style.width = data.size + 'px';
+        particle.style.height = data.size + 'px';
+        particle.style.backgroundColor = data.color;
         particle.style.position = 'fixed';
-        particle.style.borderRadius = shape === 'circle' ? '50%' : '0';
-        particle.style.transform = shape === 'triangle' ? 'rotate(45deg)' : 'rotate(0deg)';
-        particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+        particle.style.left = data.centerX + 'px';
+        particle.style.top = data.centerY + 'px';
+        particle.style.borderRadius = data.shape === 'circle' ? '50%' : '0';
         particle.style.zIndex = '10001';
+        particle.style.pointerEvents = 'none';
+        particle.style.willChange = 'transform, opacity'; // Hint for hardware acceleration
         
-        // Add sparkle effect for some particles
-        if (Math.random() > 0.7) {
-            particle.style.background = `radial-gradient(circle, ${color}, transparent)`;
-            particle.style.animation = 'sparkle 2s ease-out forwards';
+        // Big impactful glow effect
+        particle.style.boxShadow = `0 0 ${data.size * 2}px ${data.color}`;
+        
+        if (data.sparkle) {
+            particle.style.background = `radial-gradient(circle, ${data.color}, transparent)`;
         }
         
         particlesContainer.appendChild(particle);
         
-        // Animate the explosion
-        setTimeout(() => {
-            particle.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            particle.style.left = finalX + 'px';
-            particle.style.top = finalY + 'px';
-            particle.style.opacity = '0';
-            particle.style.transform += ' rotate(720deg) scale(0.1)';
-        }, 50);
-        
-        // Remove particle after animation
-        setTimeout(() => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
-            }
-        }, 2500);
-    }
+        return { element: particle, ...data };
+    });
+    
+    // Start smooth animation
+    animateParticles(particles);
     
     // Add gentle screen shake effect (no flashing)
     document.body.style.animation = 'screenShake 0.5s ease-in-out';
     setTimeout(() => {
         document.body.style.animation = '';
     }, 500);
+    
+    // Reset preloaded data for next use
+    preRenderedConfetti = [];
+    confettiPreloaded = false;
 }
 
 // Update current day display

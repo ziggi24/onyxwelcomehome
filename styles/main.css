@@ -568,6 +568,18 @@ body::before {
     animation: particleFloat 4s ease-out forwards;
 }
 
+.particle-optimized {
+    position: fixed;
+    pointer-events: none;
+    /* Hardware acceleration hints for mobile */
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Optimize for mobile performance */
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+}
+
 /* Animations */
 @keyframes titleGlow {
     0% {
